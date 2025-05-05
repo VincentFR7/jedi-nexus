@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum 188th Division - LBRP</title>
+    <title>Forum 188th Division - WW2</title>
     <style>
         :root {
-            --color-primary: #4d5d53; /* Vert militaire */
-            --color-secondary: #c1b497; /* Beige clair */
-            --color-accent: #8b4513; /* Brun */
-            --color-light: #e9e3d3; /* Beige très clair */
-            --color-dark: #2c2c2c; /* Presque noir */
-            --color-danger: #a52a2a; /* Rouge militaire */
-            --color-success: #4a6741; /* Vert foncé */
-            --color-warning: #d2b48c; /* Tan */
-            --color-rank1: #a9a9a9; /* Gris - Homme du rang */
-            --color-rank2: #cd7f32; /* Bronze - Sous-officier */
-            --color-rank3: #c0c0c0; /* Argent - Officier */
+            --color-primary: #4d5d53;
+            --color-secondary: #c1b497;
+            --color-accent: #8b4513;
+            --color-light: #e9e3d3;
+            --color-dark: #2c2c2c;
+            --color-danger: #a52a2a;
+            --color-success: #4a6741;
+            --color-warning: #d2b48c;
+            --color-rank1: #a9a9a9;
+            --color-rank2: #cd7f32;
+            --color-rank3: #c0c0c0;
         }
 
         * {
@@ -295,7 +295,6 @@
             border: 1px solid #c3e6cb;
         }
 
-        /* Admin Panel Styles */
         .admin-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -320,7 +319,6 @@
             display: none;
         }
 
-        /* Responsive design */
         @media (max-width: 768px) {
             nav {
                 flex-direction: column;
@@ -356,6 +354,23 @@
         footer p {
             margin: 5px 0;
         }
+
+        .permissions-list {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: var(--color-light);
+            border-radius: 3px;
+        }
+
+        .permission-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .permission-item input[type="checkbox"] {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -365,7 +380,7 @@
                 <span class="military-insignia"></span>
                 Forum 188<sup>th</sup> Division
             </div>
-            <div class="header-subtitle">Honneur - 1939-1945</div>
+            <div class="header-subtitle">Honneur et Patrie - 1939-1945</div>
         </div>
     </header>
 
@@ -391,9 +406,6 @@
 
     <div class="container">
         <main id="main-content">
-            <!-- Contenu principal chargé dynamiquement -->
-            
-            <!-- Section Accueil -->
             <section id="home" class="content-section">
                 <h1 class="page-title">Bienvenue sur le Forum de la 188<sup>ème</sup> Division</h1>
                 <div class="card">
@@ -409,53 +421,25 @@
                 </div>
             </section>
             
-            <!-- Section Forum -->
             <section id="forum" class="content-section hidden">
                 <h1 class="page-title">Forums de discussion</h1>
                 
                 <div class="forum-section">
                     <h2 class="forum-title">Discussions générales</h2>
-                    <ul class="topic-list" id="general-topics">
-                        <li class="topic-item">
-                            <div>
-                                <div class="topic-title">Bienvenue sur le forum</div>
-                                <div class="topic-meta">Par <span class="user-rank rank-3">Officier 188th</span> Admin - 10 messages</div>
-                            </div>
-                            <button class="btn btn-secondary view-topic-btn">Voir</button>
-                        </li>
-                    </ul>
+                    <ul class="topic-list" id="general-topics"></ul>
                 </div>
                 
                 <div class="forum-section">
                     <h2 class="forum-title">Archives historiques</h2>
-                    <ul class="topic-list" id="history-topics">
-                        <li class="topic-item">
-                            <div>
-                                <div class="topic-title">Opérations 1943-1944</div>
-                                <div class="topic-meta">Par <span class="user-rank rank-2">Sous-Officier 188th</span> Sergent - 5 messages</div>
-                            </div>
-                            <button class="btn btn-secondary view-topic-btn">Voir</button>
-                        </li>
-                    </ul>
+                    <ul class="topic-list" id="history-topics"></ul>
                 </div>
                 
                 <div class="forum-section">
                     <h2 class="forum-title">Communications internes</h2>
-                    <ul class="topic-list" id="internal-topics">
-                        <li class="topic-item">
-                            <div>
-                                <div class="topic-title">Planification des exercices</div>
-                                <div class="topic-meta">Par <span class="user-rank rank-1">Homme du rang 188th</span> Caporal - 2 messages</div>
-                            </div>
-                            <button class="btn btn-secondary view-topic-btn">Voir</button>
-                        </li>
-                    </ul>
+                    <ul class="topic-list" id="internal-topics"></ul>
                 </div>
-                
-                <button id="create-topic-btn" class="btn btn-primary">Créer un nouveau sujet</button>
             </section>
             
-            <!-- Section Membres -->
             <section id="members" class="content-section hidden">
                 <h1 class="page-title">Liste des membres</h1>
                 <div class="card">
@@ -468,14 +452,11 @@
                                 <th style="padding: 10px; text-align: left;">Messages</th>
                             </tr>
                         </thead>
-                        <tbody id="members-list">
-                            <!-- Liste des membres générée dynamiquement -->
-                        </tbody>
+                        <tbody id="members-list"></tbody>
                     </table>
                 </div>
             </section>
             
-            <!-- Section Administration -->
             <section id="admin" class="content-section hidden">
                 <h1 class="page-title">Panneau d'administration</h1>
                 
@@ -496,6 +477,25 @@
                                     <option value="2">Sous-Officier 188th</option>
                                     <option value="3">Officier 188th</option>
                                 </select>
+                            </div>
+                            <div class="permissions-list">
+                                <h4>Permissions</h4>
+                                <div class="permission-item">
+                                    <input type="checkbox" id="perm-create-forum" disabled>
+                                    <label for="perm-create-forum">Créer des forums</label>
+                                </div>
+                                <div class="permission-item">
+                                    <input type="checkbox" id="perm-delete-forum" disabled>
+                                    <label for="perm-delete-forum">Supprimer des forums</label>
+                                </div>
+                                <div class="permission-item">
+                                    <input type="checkbox" id="perm-manage-users" disabled>
+                                    <label for="perm-manage-users">Gérer les utilisateurs</label>
+                                </div>
+                                <div class="permission-item">
+                                    <input type="checkbox" id="perm-moderate" disabled>
+                                    <label for="perm-moderate">Modération des messages</label>
+                                </div>
                             </div>
                             <button id="save-user-btn" class="btn btn-primary">Enregistrer</button>
                             <button id="delete-user-btn" class="btn btn-danger">Supprimer</button>
@@ -533,7 +533,6 @@
                 </div>
             </section>
             
-            <!-- Section Connexion -->
             <section id="login" class="content-section hidden">
                 <div class="login-container">
                     <h1 class="page-title">Connexion</h1>
@@ -555,7 +554,6 @@
                 </div>
             </section>
             
-            <!-- Section Inscription -->
             <section id="register" class="content-section hidden">
                 <div class="register-container">
                     <h1 class="page-title">Inscription</h1>
@@ -595,7 +593,6 @@
     </footer>
     
     <script>
-        // Modèle de données - stockées dans localStorage
         class ForumModel {
             constructor() {
                 this.users = JSON.parse(localStorage.getItem('forum_users')) || [];
@@ -604,24 +601,26 @@
                     { id: 2, name: "Archives historiques", description: "Documents et discussions historiques" },
                     { id: 3, name: "Communications internes", description: "Communications entre membres de la division" }
                 ];
-                this.topics = JSON.parse(localStorage.getItem('forum_topics')) || [
-                    { id: 1, forumId: 1, title: "Bienvenue sur le forum", author: "Admin", authorRank: 3, messages: 10, createdAt: new Date().toISOString() },
-                    { id: 2, forumId: 2, title: "Opérations 1943-1944", author: "Sergent", authorRank: 2, messages: 5, createdAt: new Date().toISOString() },
-                    { id: 3, forumId: 3, title: "Planification des exercices", author: "Caporal", authorRank: 1, messages: 2, createdAt: new Date().toISOString() }
-                ];
+                this.topics = JSON.parse(localStorage.getItem('forum_topics')) || [];
                 
-                // Créer un admin par défaut s'il n'y en a pas
                 if (this.users.length === 0) {
                     this.users.push({
                         id: 1,
                         username: "Admin",
                         email: "admin@example.com",
-                        password: "admin123", // Dans une app réelle, utiliser un hachage sécurisé
-                        rank: 3, // Officier
+                        password: "admin123",
+                        rank: 3,
                         isAdmin: true,
-                        isModerator: true,
+                        permissions: {
+                            createForum: true,
+                            deleteForum: true,
+                            manageUsers: true,
+                            moderate: true,
+                            createTopics: true,
+                            deleteTopics: true
+                        },
                         createdAt: new Date().toISOString(),
-                        messageCount: 15
+                        messageCount: 0
                     });
                     this.saveUsers();
                 }
@@ -640,7 +639,6 @@
             }
             
             createUser(username, email, password) {
-                // Vérifier si l'utilisateur existe déjà
                 if (this.users.some(u => u.username === username || u.email === email)) {
                     return { success: false, message: "Nom d'utilisateur ou email déjà utilisé" };
                 }
@@ -649,10 +647,17 @@
                     id: this.users.length + 1,
                     username,
                     email,
-                    password, // Dans une app réelle, hacher le mot de passe
-                    rank: 1, // Homme du rang par défaut
+                    password,
+                    rank: 1,
                     isAdmin: false,
-                    isModerator: false,
+                    permissions: {
+                        createForum: false,
+                        deleteForum: false,
+                        manageUsers: false,
+                        moderate: false,
+                        createTopics: false,
+                        deleteTopics: false
+                    },
                     createdAt: new Date().toISOString(),
                     messageCount: 0
                 };
@@ -678,6 +683,11 @@
                 const user = this.users.find(u => u.id === userId);
                 if (user) {
                     user.rank = newRank;
+                    if (newRank === 3) {
+                        user.permissions.moderate = true;
+                    } else {
+                        user.permissions.moderate = false;
+                    }
                     this.saveUsers();
                     return true;
                 }
@@ -686,7 +696,7 @@
             
             deleteUser(userId) {
                 const index = this.users.findIndex(u => u.id === userId);
-                if (index !== -1) {
+                if (index !== -1 && !this.users[index].isAdmin) {
                     this.users.splice(index, 1);
                     this.saveUsers();
                     return true;
@@ -694,42 +704,71 @@
                 return false;
             }
             
-            createForum(name, description) {
+            createForum(name, description, createdBy) {
+                if (!createdBy.isAdmin) {
+                    return { success: false, message: "Permission refusée" };
+                }
+                
                 const newForum = {
                     id: this.forums.length + 1,
                     name,
-                    description
+                    description,
+                    createdBy: createdBy.username,
+                    createdAt: new Date().toISOString()
                 };
                 
                 this.forums.push(newForum);
                 this.saveForums();
-                return newForum;
+                return { success: true, forum: newForum };
             }
             
-            createTopic(forumId, title, author, authorRank) {
+            createTopic(forumId, title, author) {
+                if (!author.permissions.createTopics && !author.isAdmin) {
+                    return { success: false, message: "Permission refusée" };
+                }
+                
                 const newTopic = {
                     id: this.topics.length + 1,
                     forumId,
                     title,
-                    author,
-                    authorRank,
+                    author: author.username,
+                    authorRank: author.rank,
                     messages: 0,
-                    createdAt: new Date().toISOString()
+                    createdAt: new Date().toISOString(),
+                    locked: false
                 };
                 
                 this.topics.push(newTopic);
                 this.saveTopics();
-                return newTopic;
+                return { success: true, topic: newTopic };
             }
             
-            deleteTopic(topicId) {
+            deleteTopic(topicId, user) {
+                if (!user.permissions.deleteTopics && !user.isAdmin) {
+                    return { success: false, message: "Permission refusée" };
+                }
+                
                 const index = this.topics.findIndex(t => t.id === topicId);
                 if (index !== -1) {
                     this.topics.splice(index, 1);
                     this.saveTopics();
-                    return true;
+                    return { success: true };
                 }
-                return false;
+                return { success: false, message: "Sujet non trouvé" };
+            }
+            
+            lockTopic(topicId, user) {
+                if (!user.permissions.moderate && !user.isAdmin) {
+                    return { success: false, message: "Permission refusée" };
+                }
+                
+                const topic = this.topics.find(t => t.id === topicId);
+                if (topic) {
+                    topic.locked = !topic.locked;
+                    this.saveTopics();
+                    return { success: true, locked: topic.locked };
+                }
+                return { success: false, message: "Sujet non trouvé" };
             }
             
             getForumTopics(forumId) {
@@ -742,23 +781,20 @@
                     username: u.username,
                     rank: u.rank,
                     createdAt: u.createdAt,
-                    messageCount: u.messageCount
+                    messageCount: u.messageCount,
+                    isAdmin: u.isAdmin
                 }));
             }
         }
         
-        // Contrôleur principal
         class ForumController {
             constructor() {
                 this.model = new ForumModel();
                 this.currentUser = null;
-                
-                // Initialiser l'application
                 this.initApp();
             }
             
             initApp() {
-                // Configurer les écouteurs d'événements pour la navigation
                 document.querySelectorAll('.nav-link').forEach(link => {
                     link.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -767,7 +803,6 @@
                     });
                 });
                 
-                // Configurer les boutons de connexion/inscription
                 document.getElementById('login-btn').addEventListener('click', () => this.showSection('login'));
                 document.getElementById('register-btn').addEventListener('click', () => this.showSection('register'));
                 document.getElementById('logout-btn').addEventListener('click', () => this.logout());
@@ -780,7 +815,6 @@
                     this.showSection('login');
                 });
                 
-                // Configurer le formulaire de connexion
                 document.getElementById('login-form').addEventListener('submit', (e) => {
                     e.preventDefault();
                     const username = document.getElementById('login-username').value;
@@ -788,7 +822,6 @@
                     this.login(username, password);
                 });
                 
-                // Configurer le formulaire d'inscription
                 document.getElementById('register-form').addEventListener('submit', (e) => {
                     e.preventDefault();
                     const username = document.getElementById('register-username').value;
@@ -804,96 +837,130 @@
                     this.register(username, email, password);
                 });
                 
-                // Configurer les fonctionnalités d'administration
                 document.getElementById('save-user-btn').addEventListener('click', () => {
+                    if (!this.currentUser?.isAdmin) {
+                        this.showMessage('admin-message', "Permission refusée", 'error');
+                        return;
+                    }
+                    
                     const userId = parseInt(document.getElementById('user-select').value);
                     const rank = parseInt(document.getElementById('user-rank').value);
                     if (userId) {
                         this.model.updateUserRank(userId, rank);
                         this.loadAdminPanel();
-                        this.showMessage('admin-message', "Rang de l'utilisateur mis à jour", 'success');
+                        this.showMessage('admin-message', "Rang de l'utilisateur mis à jour", '
+success');
                     }
                 });
                 
                 document.getElementById('delete-user-btn').addEventListener('click', () => {
+                    if (!this.currentUser?.isAdmin) {
+                        this.showMessage('admin-message', "Permission refusée", 'error');
+                        return;
+                    }
+                    
                     const userId = parseInt(document.getElementById('user-select').value);
                     if (userId && userId !== this.currentUser.id) {
                         if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur?")) {
-                            this.model.deleteUser(userId);
-                            this.loadAdminPanel();
-                            this.showMessage('admin-message', "Utilisateur supprimé", 'success');
+                            if (this.model.deleteUser(userId)) {
+                                this.loadAdminPanel();
+                                this.showMessage('admin-message', "Utilisateur supprimé", 'success');
+                            } else {
+                                this.showMessage('admin-message', "Impossible de supprimer l'administrateur", 'error');
+                            }
                         }
                     } else {
-                        alert("Vous ne pouvez pas supprimer votre propre compte en tant qu'administrateur");
+                        this.showMessage('admin-message', "Vous ne pouvez pas supprimer votre propre compte", 'error');
                     }
                 });
                 
                 document.getElementById('create-forum-btn').addEventListener('click', () => {
+                    if (!this.currentUser?.isAdmin) {
+                        this.showMessage('admin-message', "Permission refusée", 'error');
+                        return;
+                    }
+                    
                     const name = document.getElementById('forum-name').value;
                     const description = document.getElementById('forum-description').value;
                     
                     if (name && description) {
-                        this.model.createForum(name, description);
-                        document.getElementById('forum-name').value = '';
-                        document.getElementById('forum-description').value = '';
-                        this.loadForums();
-                        this.showMessage('admin-message', "Forum créé avec succès", 'success');
+                        const result = this.model.createForum(name, description, this.currentUser);
+                        if (result.success) {
+                            document.getElementById('forum-name').value = '';
+                            document.getElementById('forum-description').value = '';
+                            this.loadForums();
+                            this.showMessage('admin-message', "Forum créé avec succès", 'success');
+                        } else {
+                            this.showMessage('admin-message', result.message, 'error');
+                        }
                     }
                 });
                 
                 document.getElementById('delete-topic-btn').addEventListener('click', () => {
+                    if (!this.currentUser?.isAdmin) {
+                        this.showMessage('admin-message', "Permission refusée", 'error');
+                        return;
+                    }
+                    
                     const topicId = parseInt(document.getElementById('topic-select').value);
                     if (topicId) {
                         if (confirm("Êtes-vous sûr de vouloir supprimer ce sujet?")) {
-                            this.model.deleteTopic(topicId);
+                            const result = this.model.deleteTopic(topicId, this.currentUser);
+                            if (result.success) {
+                                this.loadAdminPanel();
+                                this.loadForums();
+                                this.showMessage('admin-message', "Sujet supprimé", 'success');
+                            } else {
+                                this.showMessage('admin-message', result.message, 'error');
+                            }
+                        }
+                    }
+                });
+                
+                document.getElementById('lock-topic-btn').addEventListener('click', () => {
+                    if (!this.currentUser?.permissions.moderate && !this.currentUser?.isAdmin) {
+                        this.showMessage('admin-message', "Permission refusée", 'error');
+                        return;
+                    }
+                    
+                    const topicId = parseInt(document.getElementById('topic-select').value);
+                    if (topicId) {
+                        const result = this.model.lockTopic(topicId, this.currentUser);
+                        if (result.success) {
                             this.loadAdminPanel();
                             this.loadForums();
-                            this.showMessage('admin-message', "Sujet supprimé", 'success');
+                            this.showMessage('admin-message', 
+                                result.locked ? "Sujet verrouillé" : "Sujet déverrouillé", 
+                                'success'
+                            );
+                        } else {
+                            this.showMessage('admin-message', result.message, 'error');
                         }
                     }
                 });
                 
-                // Configurer le bouton de création de sujet
-                document.getElementById('create-topic-btn').addEventListener('click', () => {
-                    if (this.currentUser) {
-                        const title = prompt("Titre du nouveau sujet:");
-                        if (title) {
-                            this.model.createTopic(1, title, this.currentUser.username, this.currentUser.rank);
-                            this.loadForums();
-                        }
-                    } else {
-                        alert("Vous devez être connecté pour créer un sujet");
-                        this.showSection('login');
-                    }
-                });
-                
-                // Vérifier si l'utilisateur est déjà connecté (stocké dans sessionStorage)
                 const storedUser = sessionStorage.getItem('currentUser');
                 if (storedUser) {
                     this.currentUser = JSON.parse(storedUser);
                     this.updateUIForLoggedInUser();
                 }
                 
-                // Par défaut, afficher la page d'accueil
                 this.showSection('home');
                 this.loadMembers();
                 this.loadForums();
             }
             
             showSection(sectionId) {
-                // Cacher toutes les sections
                 document.querySelectorAll('.content-section').forEach(section => {
                     section.classList.add('hidden');
                 });
                 
-                // Afficher la section demandée
                 const targetSection = document.getElementById(sectionId);
                 if (targetSection) {
                     targetSection.classList.remove('hidden');
                 }
                 
-                // Cas spéciaux pour certaines sections
-                if (sectionId === 'admin' && this.currentUser && this.currentUser.isAdmin) {
+                if (sectionId === 'admin' && this.currentUser?.isAdmin) {
                     this.loadAdminPanel();
                 }
                 
@@ -938,26 +1005,30 @@
             }
             
             updateUIForLoggedInUser() {
-                // Mettre à jour l'affichage du nom d'utilisateur et du rang
                 document.getElementById('username-display').textContent = this.currentUser.username;
                 const rankDisplay = document.getElementById('rank-display');
                 rankDisplay.textContent = this.getRankName(this.currentUser.rank);
                 rankDisplay.className = 'user-rank rank-' + this.currentUser.rank;
                 
-                // Mettre à jour la visibilité des boutons/éléments
                 document.getElementById('login-btn').classList.add('hidden');
                 document.getElementById('register-btn').classList.add('hidden');
                 document.getElementById('logout-btn').classList.remove('hidden');
                 document.querySelector('.user-info').classList.remove('hidden');
                 
-                // Afficher le lien d'administration si l'utilisateur est admin
                 if (this.currentUser.isAdmin) {
                     document.querySelector('.admin-link').classList.remove('hidden');
+                }
+                
+                // Mettre à jour les cases à cocher des permissions
+                if (this.currentUser.permissions) {
+                    document.getElementById('perm-create-forum').checked = this.currentUser.permissions.createForum;
+                    document.getElementById('perm-delete-forum').checked = this.currentUser.permissions.deleteForum;
+                    document.getElementById('perm-manage-users').checked = this.currentUser.permissions.manageUsers;
+                    document.getElementById('perm-moderate').checked = this.currentUser.permissions.moderate;
                 }
             }
             
             updateUIForLoggedOutUser() {
-                // Réinitialiser l'interface pour un utilisateur déconnecté
                 document.getElementById('username-display').textContent = "Non connecté";
                 document.getElementById('rank-display').textContent = "";
                 
@@ -966,6 +1037,12 @@
                 document.getElementById('logout-btn').classList.add('hidden');
                 document.querySelector('.user-info').classList.add('hidden');
                 document.querySelector('.admin-link').classList.add('hidden');
+                
+                // Réinitialiser les cases à cocher des permissions
+                document.getElementById('perm-create-forum').checked = false;
+                document.getElementById('perm-delete-forum').checked = false;
+                document.getElementById('perm-manage-users').checked = false;
+                document.getElementById('perm-moderate').checked = false;
             }
             
             getRankName(rankId) {
@@ -984,7 +1061,6 @@
                     messageEl.className = `message ${type}`;
                     messageEl.classList.remove('hidden');
                     
-                    // Masquer le message après 5 secondes
                     setTimeout(() => {
                         messageEl.classList.add('hidden');
                     }, 5000);
@@ -1013,7 +1089,6 @@
             }
             
             loadForums() {
-                // Charger les sujets pour chaque forum
                 const generalTopics = document.getElementById('general-topics');
                 const historyTopics = document.getElementById('history-topics');
                 const internalTopics = document.getElementById('internal-topics');
@@ -1040,37 +1115,49 @@
                     li.innerHTML = `
                         <div>
                             <div class="topic-title">${topic.title}</div>
-                            <div class="topic-meta">Par <span class="user-rank rank-${topic.authorRank}">${this.getRankName(topic.authorRank)}</span> ${topic.author} - ${topic.messages} messages</div>
+                            <div class="topic-meta">
+                                Par <span class="user-rank rank-${topic.authorRank}">${this.getRankName(topic.authorRank)}</span> 
+                                ${topic.author} - ${topic.messages} messages
+                                ${topic.locked ? ' <span class="badge badge-warning">Verrouillé</span>' : ''}
+                            </div>
                         </div>
                         <button class="btn btn-secondary view-topic-btn" data-topic-id="${topic.id}">Voir</button>
                     `;
                     container.appendChild(li);
                 });
                 
-                // Ajouter les écouteurs d'événements pour les boutons "Voir"
                 container.querySelectorAll('.view-topic-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         const topicId = parseInt(e.target.getAttribute('data-topic-id'));
+                        const topic = topics.find(t => t.id === topicId);
+                        if (topic && topic.locked && !this.currentUser?.isAdmin) {
+                            alert("Ce sujet est verrouillé");
+                            return;
+                        }
                         alert(`Visualisation du sujet #${topicId} - Fonctionnalité en développement`);
                     });
                 });
             }
             
             loadAdminPanel() {
-                // Charger la liste des utilisateurs dans le sélecteur
+                if (!this.currentUser?.isAdmin) {
+                    return;
+                }
+                
                 const userSelect = document.getElementById('user-select');
                 if (userSelect) {
                     userSelect.innerHTML = '<option value="">-- Sélectionner --</option>';
                     
                     this.model.users.forEach(user => {
-                        const option = document.createElement('option');
-                        option.value = user.id;
-                        option.textContent = `${user.username} (${this.getRankName(user.rank)})`;
-                        userSelect.appendChild(option);
+                        if (!user.isAdmin || user.id === this.currentUser.id) {
+                            const option = document.createElement('option');
+                            option.value = user.id;
+                            option.textContent = `${user.username} (${this.getRankName(user.rank)})`;
+                            userSelect.appendChild(option);
+                        }
                     });
                 }
                 
-                // Charger la liste des sujets dans le sélecteur
                 const topicSelect = document.getElementById('topic-select');
                 if (topicSelect) {
                     topicSelect.innerHTML = '<option value="">-- Sélectionner --</option>';
@@ -1078,14 +1165,28 @@
                     this.model.topics.forEach(topic => {
                         const option = document.createElement('option');
                         option.value = topic.id;
-                        option.textContent = topic.title;
+                        option.textContent = `${topic.title} ${topic.locked ? '(Verrouillé)' : ''}`;
                         topicSelect.appendChild(option);
                     });
                 }
+                
+                // Mettre à jour l'état des permissions pour l'utilisateur sélectionné
+                const updatePermissions = () => {
+                    const userId = parseInt(userSelect.value);
+                    const user = this.model.getUserById(userId);
+                    if (user) {
+                        document.getElementById('perm-create-forum').checked = user.permissions?.createForum || false;
+                        document.getElementById('perm-delete-forum').checked = user.permissions?.deleteForum || false;
+                        document.getElementById('perm-manage-users').checked = user.permissions?.manageUsers || false;
+                        document.getElementById('perm-moderate').checked = user.permissions?.moderate || false;
+                    }
+                };
+                
+                userSelect.addEventListener('change', updatePermissions);
+                updatePermissions();
             }
         }
         
-        // Initialiser l'application
         document.addEventListener('DOMContentLoaded', () => {
             new ForumController();
         });
