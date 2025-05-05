@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum 188th Division - WW2</title>
+    <style>
+        :root {
+            --color-primary: #4d5d53; /* Vert militaire */
+            --color-secondary: #c1b497; /* Beige clair */
+            --color-accent: #8b4513; /* Brun */
+            --color-light: #e9e3d3; /* Beige très clair */
+            --color-dark: #2c2c2c; /* Presque noir */
+            --color-danger: #a52a2a; /* Rouge militaire */
+            --color-success: #4a6741; /* Vert foncé */
+            --color-warning: #d2b48c; /* Tan */
+            --color-rank1: #a9a9a9; /* Gris - Homme du rang */
+            --color-rank2: #cd7f32; /* Bronze - Sous-officier */
+            --color-rank3: #c0c0c0; /* Argent - Officier */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--color-light);
+            color: var(--color-dark);
+            line-height: 1.5;
+            background-image: url('https://images.pexels.com/photos/3780365/pexels-photo-3780365.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-blend-mode: overlay;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            padding: 15px 20px;
+            border-bottom: 3px solid var(--color-accent);
+            text-align: center;
+            position: relative;
+        }
+
+        .header-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .header-subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .military-insignia {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background-color: var(--color-accent);
+            border-radius: 50%;
+            margin-right: 10px;
+            position: relative;
+            vertical-align: middle;
+        }
+
+        .military-insignia::before {
+            content: "188";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--color-light);
+            font-weight: bold;
+        }
+
+        nav {
+            background-color: var(--color-dark);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: var(--color-light);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: var(--color-secondary);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            color: var(--color-light);
+            margin-right: 15px;
+        }
+
+        .user-rank {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            margin-left: 5px;
+        }
+
+        .rank-1 {
+            background-color: var(--color-rank1);
+            color: var(--color-dark);
+        }
+
+        .rank-2 {
+            background-color: var(--color-rank2);
+            color: var(--color-dark);
+        }
+
+        .rank-3 {
+            background-color: var(--color-rank3);
+            color: var(--color-dark);
+        }
+
+        main {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            min-height: 500px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: var(--color-secondary);
+            color: var(--color-dark);
+        }
+
+        .btn-danger {
+            background-color: var(--color-danger);
+            color: white;
+        }
+
+        .btn-success {
+            background-color: var(--color-success);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 1rem;
+            background-color: var(--color-light);
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .forum-section {
+            margin-bottom: 30px;
+        }
+
+        .forum-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--color-primary);
+        }
+
+        .topic-list {
+            list-style: none;
+        }
+
+        .topic-item {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .topic-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .topic-title {
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .topic-meta {
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .login-container, .register-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-align: center;
+            color: var(--color-primary);
+        }
+
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Admin Panel Styles */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .admin-card {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-card h3 {
+            margin-bottom: 15px;
+            color: var(--color-primary);
+            border-bottom: 2px solid var(--color-secondary);
+            padding-bottom: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+            }
+
+            nav ul {
+                margin-top: 10px;
+                flex-wrap: wrap;
+            }
+
+            nav ul li {
+                margin-bottom: 5px;
+            }
+
+            .nav-right {
+                margin-top: 10px;
+            }
+
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background-color: var(--color-dark);
+            color: var(--color-light);
+            font-size: 0.9rem;
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-title">
+                <span class="military-insignia"></span>
+                Forum 188<sup>th</sup> Division
+            </div>
+            <div class="header-subtitle">Honneur et Patrie - 1939-1945</div>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#" class="nav-link" data-target="home">Accueil</a></li>
+                <li><a href="#" class="nav-link" data-target="forum">Forum</a></li>
+                <li><a href="#" class="nav-link" data-target="members">Membres</a></li>
+                <li><a href="#" class="nav-link admin-link hidden" data-target="admin">Administration</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="user-info hidden">
+                    <span id="username-display">Non connecté</span>
+                    <span id="rank-display" class="user-rank"></span>
+                </div>
+                <button id="login-btn" class="btn btn-primary">Connexion</button>
+                <button id="register-btn" class="btn btn-secondary">Inscription</button>
+                <button id="logout-btn" class="btn btn-danger hidden">Déconnexion</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <main id="main-content">
+            <!-- Contenu principal chargé dynamiquement -->
+            
+            <!-- Section Accueil -->
+            <section id="home" class="content-section">
+                <h1 class="page-title">Bienvenue sur le Forum de la 188<sup>ème</sup> Division</h1>
+                <div class="card">
+                    <h2>À propos de nous</h2>
+                    <p>Bienvenue sur le forum officiel de la 188<sup>ème</sup> Division. Ce forum est dédié aux discussions historiques, aux reconstitutions et aux échanges entre passionnés d'histoire militaire.</p>
+                    <p>Connectez-vous pour participer aux discussions et rejoindre notre communauté.</p>
+                </div>
+                <div class="card">
+                    <h2>Dernières activités</h2>
+                    <div id="latest-activities">
+                        <p>Aucune activité récente.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section Forum -->
+            <section id="forum" class="content-section hidden">
+                <h1 class="page-title">Forums de discussion</h1>
+                
+                <div class="forum-section">
+                    <h2 class="forum-title">Discussions générales</h2>
+                    <ul class="topic-list" id="general-topics">
+                        <li class="topic-item">
+                            <div>
+                                <div class="topic-title">Bienvenue sur le forum</div>
+                                <div class="topic-meta">Par <span class="user-rank rank-3">Officier 188th</span> Admin - 10 messages</div>
+                            </div>
+                            <button class="btn btn-secondary view-topic-btn">Voir</button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="forum-section">
+                    <h2 class="forum-title">Archives historiques</h2>
+                    <ul class="topic-list" id="history-topics">
+                        <li class="topic-item">
+                            <div>
+                                <div class="topic-title">Opérations 1943-1944</div>
+                                <div class="topic-meta">Par <span class="user-rank rank-2">Sous-Officier 188th</span> Sergent - 5 messages</div>
+                            </div>
+                            <button class="btn btn-secondary view-topic-btn">Voir</button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="forum-section">
+                    <h2 class="forum-title">Communications internes</h2>
+                    <ul class="topic-list" id="internal-topics">
+                        <li class="topic-item">
+                            <div>
+                                <div class="topic-title">Planification des exercices</div>
+                                <div class="topic-meta">Par <span class="user-rank rank-1">Homme du rang 188th</span> Caporal - 2 messages</div>
+                            </div>
+                            <button class="btn btn-secondary view-topic-btn">Voir</button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <button id="create-topic-btn" class="btn btn-primary">Créer un nouveau sujet</button>
+            </section>
+            
+            <!-- Section Membres -->
+            <section id="members" class="content-section hidden">
+                <h1 class="page-title">Liste des membres</h1>
+                <div class="card">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background-color: var(--color-primary); color: white;">
+                                <th style="padding: 10px; text-align: left;">Nom d'utilisateur</th>
+                                <th style="padding: 10px; text-align: left;">Rang</th>
+                                <th style="padding: 10px; text-align: left;">Date d'inscription</th>
+                                <th style="padding: 10px; text-align: left;">Messages</th>
+                            </tr>
+                        </thead>
+                        <tbody id="members-list">
+                            <!-- Liste des membres générée dynamiquement -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- Section Administration -->
+            <section id="admin" class="content-section hidden">
+                <h1 class="page-title">Panneau d'administration</h1>
+                
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h3>Gestion des utilisateurs</h3>
+                        <div id="admin-users">
+                            <div class="form-group">
+                                <label for="user-select">Sélectionner un utilisateur</label>
+                                <select id="user-select" class="form-control">
+                                    <option value="">-- Sélectionner --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="user-rank">Changer le rang</label>
+                                <select id="user-rank" class="form-control">
+                                    <option value="1">Homme du rang 188th</option>
+                                    <option value="2">Sous-Officier 188th</option>
+                                    <option value="3">Officier 188th</option>
+                                </select>
+                            </div>
+                            <button id="save-user-btn" class="btn btn-primary">Enregistrer</button>
+                            <button id="delete-user-btn" class="btn btn-danger">Supprimer</button>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-card">
+                        <h3>Gestion des forums</h3>
+                        <div id="admin-forums">
+                            <div class="form-group">
+                                <label for="forum-name">Nom du forum</label>
+                                <input type="text" id="forum-name" class="form-control" placeholder="Nom du nouveau forum">
+                            </div>
+                            <div class="form-group">
+                                <label for="forum-description">Description</label>
+                                <textarea id="forum-description" class="form-control" rows="3" placeholder="Description du forum"></textarea>
+                            </div>
+                            <button id="create-forum-btn" class="btn btn-primary">Créer un forum</button>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-card">
+                        <h3>Modération</h3>
+                        <div id="admin-moderation">
+                            <div class="form-group">
+                                <label for="topic-select">Sélectionner un sujet</label>
+                                <select id="topic-select" class="form-control">
+                                    <option value="">-- Sélectionner --</option>
+                                </select>
+                            </div>
+                            <button id="lock-topic-btn" class="btn btn-warning">Verrouiller</button>
+                            <button id="delete-topic-btn" class="btn btn-danger">Supprimer</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section Connexion -->
+            <section id="login" class="content-section hidden">
+                <div class="login-container">
+                    <h1 class="page-title">Connexion</h1>
+                    <div id="login-message" class="message hidden"></div>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-username">Nom d'utilisateur</label>
+                            <input type="text" id="login-username" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Mot de passe</label>
+                            <input type="password" id="login-password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Se connecter</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 15px;">
+                        Pas encore de compte? <a href="#" id="go-to-register">S'inscrire</a>
+                    </p>
+                </div>
+            </section>
+            
+            <!-- Section Inscription -->
+            <section id="register" class="content-section hidden">
+                <div class="register-container">
+                    <h1 class="page-title">Inscription</h1>
+                    <div id="register-message" class="message hidden"></div>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="register-username">Nom d'utilisateur</label>
+                            <input type="text" id="register-username" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Adresse email</label>
+                            <input type="email" id="register-email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Mot de passe</label>
+                            <input type="password" id="register-password" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-confirm">Confirmer le mot de passe</label>
+                            <input type="password" id="register-confirm" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">S'inscrire</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 15px;">
+                        Déjà inscrit? <a href="#" id="go-to-login">Se connecter</a>
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Forum 188<sup>ème</sup> Division &copy; 2025</p>
+            <p>Honneur - Devoir - Patrie</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Modèle de données - stockées dans localStorage
+        class ForumModel {
+            constructor() {
+                this.users = JSON.parse(localStorage.getItem('forum_users')) || [];
+                this.forums = JSON.parse(localStorage.getItem('forum_forums')) || [
+                    { id: 1, name: "Discussions générales", description: "Forum principal pour les discussions générales" },
+                    { id: 2, name: "Archives historiques", description: "Documents et discussions historiques" },
+                    { id: 3, name: "Communications internes", description: "Communications entre membres de la division" }
+                ];
+                this.topics = JSON.parse(localStorage.getItem('forum_topics')) || [
+                    { id: 1, forumId: 1, title: "Bienvenue sur le forum", author: "Admin", authorRank: 3, messages: 10, createdAt: new Date().toISOString() },
+                    { id: 2, forumId: 2, title: "Opérations 1943-1944", author: "Sergent", authorRank: 2, messages: 5, createdAt: new Date().toISOString() },
+                    { id: 3, forumId: 3, title: "Planification des exercices", author: "Caporal", authorRank: 1, messages: 2, createdAt: new Date().toISOString() }
+                ];
+                
+                // Créer un admin par défaut s'il n'y en a pas
+                if (this.users.length === 0) {
+                    this.users.push({
+                        id: 1,
+                        username: "Admin",
+                        email: "admin@example.com",
+                        password: "admin123", // Dans une app réelle, utiliser un hachage sécurisé
+                        rank: 3, // Officier
+                        isAdmin: true,
+                        isModerator: true,
+                        createdAt: new Date().toISOString(),
+                        messageCount: 15
+                    });
+                    this.saveUsers();
+                }
+            }
+            
+            saveUsers() {
+                localStorage.setItem('forum_users', JSON.stringify(this.users));
+            }
+            
+            saveForums() {
+                localStorage.setItem('forum_forums', JSON.stringify(this.forums));
+            }
+            
+            saveTopics() {
+                localStorage.setItem('forum_topics', JSON.stringify(this.topics));
+            }
+            
+            createUser(username, email, password) {
+                // Vérifier si l'utilisateur existe déjà
+                if (this.users.some(u => u.username === username || u.email === email)) {
+                    return { success: false, message: "Nom d'utilisateur ou email déjà utilisé" };
+                }
+                
+                const newUser = {
+                    id: this.users.length + 1,
+                    username,
+                    email,
+                    password, // Dans une app réelle, hacher le mot de passe
+                    rank: 1, // Homme du rang par défaut
+                    isAdmin: false,
+                    isModerator: false,
+                    createdAt: new Date().toISOString(),
+                    messageCount: 0
+                };
+                
+                this.users.push(newUser);
+                this.saveUsers();
+                return { success: true, user: newUser };
+            }
+            
+            loginUser(username, password) {
+                const user = this.users.find(u => u.username === username && u.password === password);
+                if (!user) {
+                    return { success: false, message: "Nom d'utilisateur ou mot de passe incorrect" };
+                }
+                return { success: true, user };
+            }
+            
+            getUserById(id) {
+                return this.users.find(u => u.id === id);
+            }
+            
+            updateUserRank(userId, newRank) {
+                const user = this.users.find(u => u.id === userId);
+                if (user) {
+                    user.rank = newRank;
+                    this.saveUsers();
+                    return true;
+                }
+                return false;
+            }
+            
+            deleteUser(userId) {
+                const index = this.users.findIndex(u => u.id === userId);
+                if (index !== -1) {
+                    this.users.splice(index, 1);
+                    this.saveUsers();
+                    return true;
+                }
+                return false;
+            }
+            
+            createForum(name, description) {
+                const newForum = {
+                    id: this.forums.length + 1,
+                    name,
+                    description
+                };
+                
+                this.forums.push(newForum);
+                this.saveForums();
+                return newForum;
+            }
+            
+            createTopic(forumId, title, author, authorRank) {
+                const newTopic = {
+                    id: this.topics.length + 1,
+                    forumId,
+                    title,
+                    author,
+                    authorRank,
+                    messages: 0,
+                    createdAt: new Date().toISOString()
+                };
+                
+                this.topics.push(newTopic);
+                this.saveTopics();
+                return newTopic;
+            }
+            
+            deleteTopic(topicId) {
+                const index = this.topics.findIndex(t => t.id === topicId);
+                if (index !== -1) {
+                    this.topics.splice(index, 1);
+                    this.saveTopics();
+                    return true;
+                }
+                return false;
+            }
+            
+            getForumTopics(forumId) {
+                return this.topics.filter(t => t.forumId === forumId);
+            }
+            
+            getAllMembers() {
+                return this.users.map(u => ({
+                    id: u.id,
+                    username: u.username,
+                    rank: u.rank,
+                    createdAt: u.createdAt,
+                    messageCount: u.messageCount
+                }));
+            }
+        }
+        
+        // Contrôleur principal
+        class ForumController {
+            constructor() {
+                this.model = new ForumModel();
+                this.currentUser = null;
+                
+                // Initialiser l'application
+                this.initApp();
+            }
+            
+            initApp() {
+                // Configurer les écouteurs d'événements pour la navigation
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const target = e.target.getAttribute('data-target');
+                        this.showSection(target);
+                    });
+                });
+                
+                // Configurer les boutons de connexion/inscription
+                document.getElementById('login-btn').addEventListener('click', () => this.showSection('login'));
+                document.getElementById('register-btn').addEventListener('click', () => this.showSection('register'));
+                document.getElementById('logout-btn').addEventListener('click', () => this.logout());
+                document.getElementById('go-to-register').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showSection('register');
+                });
+                document.getElementById('go-to-login').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showSection('login');
+                });
+                
+                // Configurer le formulaire de connexion
+                document.getElementById('login-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const username = document.getElementById('login-username').value;
+                    const password = document.getElementById('login-password').value;
+                    this.login(username, password);
+                });
+                
+                // Configurer le formulaire d'inscription
+                document.getElementById('register-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const username = document.getElementById('register-username').value;
+                    const email = document.getElementById('register-email').value;
+                    const password = document.getElementById('register-password').value;
+                    const confirm = document.getElementById('register-confirm').value;
+                    
+                    if (password !== confirm) {
+                        this.showMessage('register-message', "Les mots de passe ne correspondent pas", 'error');
+                        return;
+                    }
+                    
+                    this.register(username, email, password);
+                });
+                
+                // Configurer les fonctionnalités d'administration
+                document.getElementById('save-user-btn').addEventListener('click', () => {
+                    const userId = parseInt(document.getElementById('user-select').value);
+                    const rank = parseInt(document.getElementById('user-rank').value);
+                    if (userId) {
+                        this.model.updateUserRank(userId, rank);
+                        this.loadAdminPanel();
+                        this.showMessage('admin-message', "Rang de l'utilisateur mis à jour", 'success');
+                    }
+                });
+                
+                document.getElementById('delete-user-btn').addEventListener('click', () => {
+                    const userId = parseInt(document.getElementById('user-select').value);
+                    if (userId && userId !== this.currentUser.id) {
+                        if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur?")) {
+                            this.model.deleteUser(userId);
+                            this.loadAdminPanel();
+                            this.showMessage('admin-message', "Utilisateur supprimé", 'success');
+                        }
+                    } else {
+                        alert("Vous ne pouvez pas supprimer votre propre compte en tant qu'administrateur");
+                    }
+                });
+                
+                document.getElementById('create-forum-btn').addEventListener('click', () => {
+                    const name = document.getElementById('forum-name').value;
+                    const description = document.getElementById('forum-description').value;
+                    
+                    if (name && description) {
+                        this.model.createForum(name, description);
+                        document.getElementById('forum-name').value = '';
+                        document.getElementById('forum-description').value = '';
+                        this.loadForums();
+                        this.showMessage('admin-message', "Forum créé avec succès", 'success');
+                    }
+                });
+                
+                document.getElementById('delete-topic-btn').addEventListener('click', () => {
+                    const topicId = parseInt(document.getElementById('topic-select').value);
+                    if (topicId) {
+                        if (confirm("Êtes-vous sûr de vouloir supprimer ce sujet?")) {
+                            this.model.deleteTopic(topicId);
+                            this.loadAdminPanel();
+                            this.loadForums();
+                            this.showMessage('admin-message', "Sujet supprimé", 'success');
+                        }
+                    }
+                });
+                
+                // Configurer le bouton de création de sujet
+                document.getElementById('create-topic-btn').addEventListener('click', () => {
+                    if (this.currentUser) {
+                        const title = prompt("Titre du nouveau sujet:");
+                        if (title) {
+                            this.model.createTopic(1, title, this.currentUser.username, this.currentUser.rank);
+                            this.loadForums();
+                        }
+                    } else {
+                        alert("Vous devez être connecté pour créer un sujet");
+                        this.showSection('login');
+                    }
+                });
+                
+                // Vérifier si l'utilisateur est déjà connecté (stocké dans sessionStorage)
+                const storedUser = sessionStorage.getItem('currentUser');
+                if (storedUser) {
+                    this.currentUser = JSON.parse(storedUser);
+                    this.updateUIForLoggedInUser();
+                }
+                
+                // Par défaut, afficher la page d'accueil
+                this.showSection('home');
+                this.loadMembers();
+                this.loadForums();
+            }
+            
+            showSection(sectionId) {
+                // Cacher toutes les sections
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.add('hidden');
+                });
+                
+                // Afficher la section demandée
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.remove('hidden');
+                }
+                
+                // Cas spéciaux pour certaines sections
+                if (sectionId === 'admin' && this.currentUser && this.currentUser.isAdmin) {
+                    this.loadAdminPanel();
+                }
+                
+                if (sectionId === 'members') {
+                    this.loadMembers();
+                }
+                
+                if (sectionId === 'forum') {
+                    this.loadForums();
+                }
+            }
+            
+            login(username, password) {
+                const result = this.model.loginUser(username, password);
+                if (result.success) {
+                    this.currentUser = result.user;
+                    sessionStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+                    this.updateUIForLoggedInUser();
+                    this.showSection('home');
+                } else {
+                    this.showMessage('login-message', result.message, 'error');
+                }
+            }
+            
+            register(username, email, password) {
+                const result = this.model.createUser(username, email, password);
+                if (result.success) {
+                    this.showMessage('register-message', "Inscription réussie! Vous pouvez maintenant vous connecter.", 'success');
+                    setTimeout(() => {
+                        this.showSection('login');
+                    }, 1500);
+                } else {
+                    this.showMessage('register-message', result.message, 'error');
+                }
+            }
+            
+            logout() {
+                this.currentUser = null;
+                sessionStorage.removeItem('currentUser');
+                this.updateUIForLoggedOutUser();
+                this.showSection('home');
+            }
+            
+            updateUIForLoggedInUser() {
+                // Mettre à jour l'affichage du nom d'utilisateur et du rang
+                document.getElementById('username-display').textContent = this.currentUser.username;
+                const rankDisplay = document.getElementById('rank-display');
+                rankDisplay.textContent = this.getRankName(this.currentUser.rank);
+                rankDisplay.className = 'user-rank rank-' + this.currentUser.rank;
+                
+                // Mettre à jour la visibilité des boutons/éléments
+                document.getElementById('login-btn').classList.add('hidden');
+                document.getElementById('register-btn').classList.add('hidden');
+                document.getElementById('logout-btn').classList.remove('hidden');
+                document.querySelector('.user-info').classList.remove('hidden');
+                
+                // Afficher le lien d'administration si l'utilisateur est admin
+                if (this.currentUser.isAdmin) {
+                    document.querySelector('.admin-link').classList.remove('hidden');
+                }
+            }
+            
+            updateUIForLoggedOutUser() {
+                // Réinitialiser l'interface pour un utilisateur déconnecté
+                document.getElementById('username-display').textContent = "Non connecté";
+                document.getElementById('rank-display').textContent = "";
+                
+                document.getElementById('login-btn').classList.remove('hidden');
+                document.getElementById('register-btn').classList.remove('hidden');
+                document.getElementById('logout-btn').classList.add('hidden');
+                document.querySelector('.user-info').classList.add('hidden');
+                document.querySelector('.admin-link').classList.add('hidden');
+            }
+            
+            getRankName(rankId) {
+                switch (rankId) {
+                    case 1: return "Homme du rang 188th";
+                    case 2: return "Sous-Officier 188th";
+                    case 3: return "Officier 188th";
+                    default: return "Inconnu";
+                }
+            }
+            
+            showMessage(elementId, message, type) {
+                const messageEl = document.getElementById(elementId);
+                if (messageEl) {
+                    messageEl.textContent = message;
+                    messageEl.className = `message ${type}`;
+                    messageEl.classList.remove('hidden');
+                    
+                    // Masquer le message après 5 secondes
+                    setTimeout(() => {
+                        messageEl.classList.add('hidden');
+                    }, 5000);
+                }
+            }
+            
+            loadMembers() {
+                const membersList = document.getElementById('members-list');
+                if (membersList) {
+                    membersList.innerHTML = '';
+                    
+                    const members = this.model.getAllMembers();
+                    members.forEach(member => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td style="padding: 10px; border-bottom: 1px solid #ddd;">${member.username}</td>
+                            <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                                <span class="user-rank rank-${member.rank}">${this.getRankName(member.rank)}</span>
+                            </td>
+                            <td style="padding: 10px; border-bottom: 1px solid #ddd;">${new Date(member.createdAt).toLocaleDateString()}</td>
+                            <td style="padding: 10px; border-bottom: 1px solid #ddd;">${member.messageCount}</td>
+                        `;
+                        membersList.appendChild(row);
+                    });
+                }
+            }
+            
+            loadForums() {
+                // Charger les sujets pour chaque forum
+                const generalTopics = document.getElementById('general-topics');
+                const historyTopics = document.getElementById('history-topics');
+                const internalTopics = document.getElementById('internal-topics');
+                
+                if (generalTopics && historyTopics && internalTopics) {
+                    generalTopics.innerHTML = '';
+                    historyTopics.innerHTML = '';
+                    internalTopics.innerHTML = '';
+                    
+                    const forum1Topics = this.model.getForumTopics(1);
+                    const forum2Topics = this.model.getForumTopics(2);
+                    const forum3Topics = this.model.getForumTopics(3);
+                    
+                    this.renderTopics(generalTopics, forum1Topics);
+                    this.renderTopics(historyTopics, forum2Topics);
+                    this.renderTopics(internalTopics, forum3Topics);
+                }
+            }
+            
+            renderTopics(container, topics) {
+                topics.forEach(topic => {
+                    const li = document.createElement('li');
+                    li.className = 'topic-item';
+                    li.innerHTML = `
+                        <div>
+                            <div class="topic-title">${topic.title}</div>
+                            <div class="topic-meta">Par <span class="user-rank rank-${topic.authorRank}">${this.getRankName(topic.authorRank)}</span> ${topic.author} - ${topic.messages} messages</div>
+                        </div>
+                        <button class="btn btn-secondary view-topic-btn" data-topic-id="${topic.id}">Voir</button>
+                    `;
+                    container.appendChild(li);
+                });
+                
+                // Ajouter les écouteurs d'événements pour les boutons "Voir"
+                container.querySelectorAll('.view-topic-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const topicId = parseInt(e.target.getAttribute('data-topic-id'));
+                        alert(`Visualisation du sujet #${topicId} - Fonctionnalité en développement`);
+                    });
+                });
+            }
+            
+            loadAdminPanel() {
+                // Charger la liste des utilisateurs dans le sélecteur
+                const userSelect = document.getElementById('user-select');
+                if (userSelect) {
+                    userSelect.innerHTML = '<option value="">-- Sélectionner --</option>';
+                    
+                    this.model.users.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.id;
+                        option.textContent = `${user.username} (${this.getRankName(user.rank)})`;
+                        userSelect.appendChild(option);
+                    });
+                }
+                
+                // Charger la liste des sujets dans le sélecteur
+                const topicSelect = document.getElementById('topic-select');
+                if (topicSelect) {
+                    topicSelect.innerHTML = '<option value="">-- Sélectionner --</option>';
+                    
+                    this.model.topics.forEach(topic => {
+                        const option = document.createElement('option');
+                        option.value = topic.id;
+                        option.textContent = topic.title;
+                        topicSelect.appendChild(option);
+                    });
+                }
+            }
+        }
+        
+        // Initialiser l'application
+        document.addEventListener('DOMContentLoaded', () => {
+            new ForumController();
+        });
+    </script>
+</body>
+</html>
