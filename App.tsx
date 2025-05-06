@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Shield, UserPlus, Users, Settings, Trash2, UserCog, BookOpen, MessageSquare, Ban } from 'lucide-react';
+import { Mail, Shield, UserPlus, Users, Settings, Trash2, UserCog, BookOpen, MessageSquare, Ban, User } from 'lucide-react';
 
 interface User {
   id: number;
@@ -9,7 +9,19 @@ interface User {
   isAdmin: boolean;
   createdAt: string;
   messageCount: number;
-  roleId?: number;
+  roles: number[];
+  avatar?: string;
+  bio?: string;
+  location?: string;
+  joinDate: string;
+  lastActive?: string;
+  website?: string;
+  signature?: string;
+  socialLinks?: {
+    twitter?: string;
+    github?: string;
+    linkedin?: string;
+  };
 }
 
 interface Forum {
@@ -38,6 +50,9 @@ interface Role {
   createdAt: string;
   autoAssign?: boolean;
   description?: string;
+  color?: string;
+  icon?: string;
+  priority?: number;
 }
 
 const DEFAULT_PERMISSIONS: Permission[] = [
@@ -47,7 +62,19 @@ const DEFAULT_PERMISSIONS: Permission[] = [
   { id: 'pin_topics', name: 'Épingler des sujets', description: 'Permet d\'épingler des sujets importants', icon: <Shield className="h-5 w-5" /> },
   { id: 'ban_users', name: 'Bannir des utilisateurs', description: 'Permet de bannir des utilisateurs', icon: <Ban className="h-5 w-5" /> },
   { id: 'edit_users', name: 'Éditer les utilisateurs', description: 'Permet de modifier les informations des utilisateurs', icon: <UserCog className="h-5 w-5" /> },
+  { id: 'manage_roles', name: 'Gérer les rôles', description: 'Permet de créer et modifier les rôles', icon: <Shield className="h-5 w-5" /> },
 ];
+
+const DEFAULT_ROLE: Role = {
+  id: 1,
+  name: "Membre",
+  permissions: ['create_forum'],
+  createdAt: new Date().toISOString(),
+  description: "Rôle par défaut pour les nouveaux membres",
+  color: "#6B7280",
+  autoAssign: true,
+  priority: 0
+};
 
 function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -55,14 +82,18 @@ function App() {
   const [message, setMessage] = useState({ text: '', type: '' });
   const [resetEmail, setResetEmail] = useState('');
   const [forums, setForums] = useState<Forum[]>([]);
-  const [roles, setRoles] = useState<Role[]>([]);
+  const [roles, setRoles] = useState<Role[]>([DEFAULT_ROLE]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newRole, setNewRole] = useState({ 
     name: '', 
     permissions: [] as string[],
     description: '',
-    autoAssign: false 
+    autoAssign: false,
+    color: '#6B7280',
+    priority: 0
   });
   const [adminSection, setAdminSection] = useState('overview');
+  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('currentUser');
@@ -72,6 +103,12 @@ function App() {
     const storedRoles = localStorage.getItem('roles');
     if (storedRoles) {
       setRoles(JSON.parse(storedRoles));
+    } else {
+      localStorage.setItem('roles', JSON.stringify([DEFAULT_ROLE]));
+    }
+    const storedUsers = localStorage.getItem('users');
+    if (storedUsers) {
+      setUsers(JSON.parse(storedUsers));
     }
   }, []);
 
@@ -89,7 +126,9 @@ function App() {
         rank: 3,
         isAdmin: true,
         createdAt: new Date().toISOString(),
-        messageCount: 0
+        messageCount: 0,
+        roles: [1],
+        joinDate: new Date().toISOString(),
       };
       setCurrentUser(adminUser);
       localStorage.setItem('currentUser', JSON.stringify(adminUser));
@@ -98,9 +137,7 @@ function App() {
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find((u: any) => u.username === username && u.password === password);
-
+    const user = users.find(u => u.username === username && u.password === password);
     if (user) {
       const { password: _, ...safeUser } = user;
       setCurrentUser(safeUser);
@@ -119,16 +156,11 @@ function App() {
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;
     const password = (form.elements.namedItem('password') as HTMLInputElement).value;
 
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    
-    if (users.some((u: any) => u.username === username || u.email === email)) {
+    if (users.some(u => u.username === username || u.email === email)) {
       setMessage({ text: 'Nom d\'utilisateur ou email déjà utilisé', type: 'error' });
       return;
     }
 
-    // Find auto-assign role if any exists
-    const autoAssignRole = roles.find(role => role.autoAssign);
-    
     const newUser = {
       id: users.length + 1,
       username,
@@ -136,34 +168,18 @@ function App() {
       password,
       rank: 1,
       isAdmin: false,
+      roles: [DEFAULT_ROLE.id],
       createdAt: new Date().toISOString(),
       messageCount: 0,
-      roleId: autoAssignRole?.id
+      joinDate: new Date().toISOString(),
+      lastActive: new Date().toISOString()
     };
 
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-
-    setMessage({ text: `Inscription réussie! ${autoAssignRole ? `Rôle attribué: ${autoAssignRole.name}` : ''}`, type: 'success' });
+    const updatedUsers = [...users, newUser];
+    setUsers(updatedUsers);
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
+    setMessage({ text: 'Inscription réussie!', type: 'success' });
     setSection('login');
-  };
-
-  const handlePasswordReset = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find((u: any) => u.email === resetEmail);
-
-    if (user) {
-      setMessage({ text: 'Instructions de réinitialisation envoyées par email', type: 'success' });
-    } else {
-      setMessage({ text: 'Email non trouvé', type: 'error' });
-    }
-  };
-
-  const handleLogout = () => {
-    setCurrentUser(null);
-    localStorage.removeItem('currentUser');
-    setSection('home');
   };
 
   const handleCreateRole = (e: React.FormEvent<HTMLFormElement>) => {
@@ -173,41 +189,146 @@ function App() {
       return;
     }
 
-    if (newRole.autoAssign && roles.some(r => r.autoAssign)) {
-      setMessage({ text: 'Un seul rôle peut être assigné automatiquement', type: 'error' });
-      return;
-    }
-
+    const roleId = roles.length + 1;
     const newRoleObj: Role = {
-      id: roles.length + 1,
+      id: roleId,
       name: newRole.name,
       permissions: newRole.permissions,
       createdAt: new Date().toISOString(),
       description: newRole.description,
-      autoAssign: newRole.autoAssign
+      autoAssign: newRole.autoAssign,
+      color: newRole.color,
+      priority: newRole.priority
     };
 
     const updatedRoles = [...roles, newRoleObj];
     setRoles(updatedRoles);
     localStorage.setItem('roles', JSON.stringify(updatedRoles));
-    setNewRole({ name: '', permissions: [], description: '', autoAssign: false });
+    setNewRole({ 
+      name: '', 
+      permissions: [], 
+      description: '', 
+      autoAssign: false,
+      color: '#6B7280',
+      priority: 0
+    });
     setMessage({ text: 'Rôle créé avec succès', type: 'success' });
   };
 
-  const handleDeleteRole = (roleId: number) => {
-    const updatedRoles = roles.filter(role => role.id !== roleId);
-    setRoles(updatedRoles);
-    localStorage.setItem('roles', JSON.stringify(updatedRoles));
-    setMessage({ text: 'Rôle supprimé avec succès', type: 'success' });
+  const handleUpdateUserRoles = (userId: number, roleIds: number[]) => {
+    const updatedUsers = users.map(user => {
+      if (user.id === userId) {
+        return { ...user, roles: roleIds };
+      }
+      return user;
+    });
+    setUsers(updatedUsers);
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
+    setMessage({ text: 'Rôles mis à jour avec succès', type: 'success' });
   };
 
-  const togglePermission = (permissionId: string) => {
-    setNewRole(prev => ({
-      ...prev,
-      permissions: prev.permissions.includes(permissionId)
-        ? prev.permissions.filter(p => p !== permissionId)
-        : [...prev.permissions, permissionId]
-    }));
+  const handleUpdateProfile = (userId: number, profileData: Partial<User>) => {
+    const updatedUsers = users.map(user => {
+      if (user.id === userId) {
+        return { ...user, ...profileData };
+      }
+      return user;
+    });
+    setUsers(updatedUsers);
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
+    setMessage({ text: 'Profil mis à jour avec succès', type: 'success' });
+  };
+
+  const renderUserProfile = (user: User) => {
+    const userRoles = roles.filter(role => user.roles.includes(role.id));
+
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0">
+            <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
+              {user.avatar ? (
+                <img src={user.avatar} alt={user.username} className="w-full h-full rounded-full object-cover" />
+              ) : (
+                <User className="w-12 h-12 text-gray-400" />
+              )}
+            </div>
+          </div>
+          <div className="flex-grow">
+            <h2 className="text-2xl font-bold">{user.username}</h2>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {userRoles.map(role => (
+                <span
+                  key={role.id}
+                  className="px-2 py-1 rounded text-sm"
+                  style={{ backgroundColor: role.color, color: '#fff' }}
+                >
+                  {role.name}
+                </span>
+              ))}
+            </div>
+            <div className="mt-4 space-y-2 text-gray-600">
+              <p><strong>Membre depuis:</strong> {new Date(user.joinDate).toLocaleDateString()}</p>
+              <p><strong>Dernière activité:</strong> {user.lastActive ? new Date(user.lastActive).toLocaleDateString() : 'Jamais'}</p>
+              <p><strong>Messages:</strong> {user.messageCount}</p>
+              {user.location && <p><strong>Localisation:</strong> {user.location}</p>}
+              {user.website && <p><strong>Site web:</strong> <a href={user.website} className="text-blue-600 hover:underline">{user.website}</a></p>}
+            </div>
+            {user.bio && (
+              <div className="mt-4">
+                <h3 className="font-semibold">À propos</h3>
+                <p className="mt-1 text-gray-600">{user.bio}</p>
+              </div>
+            )}
+            {user.socialLinks && (
+              <div className="mt-4">
+                <h3 className="font-semibold">Réseaux sociaux</h3>
+                <div className="flex space-x-4 mt-2">
+                  {user.socialLinks.twitter && (
+                    <a href={user.socialLinks.twitter} className="text-blue-400 hover:text-blue-600">
+                      Twitter
+                    </a>
+                  )}
+                  {user.socialLinks.github && (
+                    <a href={user.socialLinks.github} className="text-gray-800 hover:text-gray-600">
+                      GitHub
+                    </a>
+                  )}
+                  {user.socialLinks.linkedin && (
+                    <a href={user.socialLinks.linkedin} className="text-blue-600 hover:text-blue-800">
+                      LinkedIn
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        {currentUser?.isAdmin && (
+          <div className="mt-6 border-t pt-4">
+            <h3 className="font-semibold mb-4">Gestion des rôles</h3>
+            <div className="space-y-2">
+              {roles.map(role => (
+                <label key={role.id} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={user.roles.includes(role.id)}
+                    onChange={(e) => {
+                      const newRoles = e.target.checked
+                        ? [...user.roles, role.id]
+                        : user.roles.filter(id => id !== role.id);
+                      handleUpdateUserRoles(user.id, newRoles);
+                    }}
+                    className="rounded text-indigo-600"
+                  />
+                  <span style={{ color: role.color }}>{role.name}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   const renderAdminContent = () => {
@@ -239,6 +360,27 @@ function App() {
                   />
                 </div>
 
+                <div>
+                  <label className="block mb-1">Couleur</label>
+                  <input
+                    type="color"
+                    value={newRole.color}
+                    onChange={(e) => setNewRole(prev => ({ ...prev, color: e.target.value }))}
+                    className="w-full p-1 border rounded"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1">Priorité</label>
+                  <input
+                    type="number"
+                    value={newRole.priority}
+                    onChange={(e) => setNewRole(prev => ({ ...prev, priority: parseInt(e.target.value) }))}
+                    className="w-full p-2 border rounded"
+                    min="0"
+                  />
+                </div>
+
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -259,7 +401,14 @@ function App() {
                           type="checkbox"
                           id={permission.id}
                           checked={newRole.permissions.includes(permission.id)}
-                          onChange={() => togglePermission(permission.id)}
+                          onChange={() => {
+                            setNewRole(prev => ({
+                              ...prev,
+                              permissions: prev.permissions.includes(permission.id)
+                                ? prev.permissions.filter(p => p !== permission.id)
+                                : [...prev.permissions, permission.id]
+                            }));
+                          }}
                           className="mr-3"
                         />
                         <div className="flex items-center">
@@ -290,7 +439,7 @@ function App() {
                     <div className="flex justify-between items-start">
                       <div className="space-y-2">
                         <div className="flex items-center space-x-2">
-                          <h4 className="text-lg font-medium">{role.name}</h4>
+                          <h4 className="text-lg font-medium" style={{ color: role.color }}>{role.name}</h4>
                           {role.autoAssign && (
                             <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
                               Auto-assigné
@@ -318,70 +467,49 @@ function App() {
                           </div>
                         </div>
                       </div>
-                      <button
-                        onClick={() => handleDeleteRole(role.id)}
-                        className="text-red-600 hover:text-red-800 p-2"
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </button>
+                      {role.id !== DEFAULT_ROLE.id && (
+                        <button
+                          onClick={() => {
+                            const updatedRoles = roles.filter(r => r.id !== role.id);
+                            setRoles(updatedRoles);
+                            localStorage.setItem('roles', JSON.stringify(updatedRoles));
+                            setMessage({ text: 'Rôle supprimé avec succès', type: 'success' });
+                          }}
+                          className="text-red-600 hover:text-red-800 p-2"
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
-                {roles.length === 0 && (
-                  <p className="text-gray-600">Aucun rôle n'a été créé pour le moment.</p>
-                )}
               </div>
             </div>
           </div>
         );
 
-      case 'forums':
+      case 'users':
         return (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-4">Gestion des forums</h3>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const form = e.currentTarget;
-              const name = (form.elements.namedItem('name') as HTMLInputElement).value;
-              const description = (form.elements.namedItem('description') as HTMLInputElement).value;
-              
-              const newForum = {
-                id: forums.length + 1,
-                name,
-                description,
-                createdBy: currentUser!.username,
-                createdAt: new Date().toISOString(),
-                permissions: {
-                  read: [1, 2, 3],
-                  write: [2, 3]
-                }
-              };
-
-              setForums([...forums, newForum]);
-              form.reset();
-            }} className="space-y-4">
-              <div>
-                <label className="block mb-1">Nom du forum</label>
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-              <div>
-                <label className="block mb-1">Description</label>
-                <textarea
-                  name="description"
-                  required
-                  className="w-full p-2 border rounded"
-                  rows={3}
-                />
-              </div>
-              <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-                Créer un forum
-              </button>
-            </form>
+            <h3 className="text-xl font-semibold mb-4">Gestion des utilisateurs</h3>
+            <div className="space-y-4">
+              {users.map(user => (
+                <div key={user.id} className="border p-4 rounded hover:bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h4 className="text-lg font-medium">{user.username}</h4>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                    </div>
+                    <button
+                      onClick={() => setSelectedUser(user)}
+                      className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+                    >
+                      Voir le profil
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         );
 
@@ -393,7 +521,7 @@ function App() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span>Nombre d'utilisateurs</span>
-                  <span className="font-bold">{JSON.parse(localStorage.getItem('users') || '[]').length}</span>
+                  <span className="font-bold">{users.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Nombre de forums</span>
@@ -415,6 +543,13 @@ function App() {
                 >
                   <Shield className="h-5 w-5 mr-2" />
                   Gérer les rôles
+                </button>
+                <button
+                  onClick={() => setAdminSection('users')}
+                  className="w-full text-left px-4 py-2 rounded hover:bg-gray-100 flex items-center"
+                >
+                  <Users className="h-5 w-5 mr-2" />
+                  Gérer les utilisateurs
                 </button>
                 <button
                   onClick={() => setAdminSection('forums')}
@@ -439,6 +574,7 @@ function App() {
             {currentUser && (
               <>
                 <button onClick={() => setSection('forums')} className="hover:text-indigo-200">Forums</button>
+                <button onClick={() => setSection('profile')} className="hover:text-indigo-200">Profil</button>
                 {currentUser.isAdmin && (
                   <button onClick={() => setSection('admin')} className="hover:text-indigo-200">Administration</button>
                 )}
@@ -500,12 +636,6 @@ function App() {
                 Se connecter
               </button>
             </form>
-            <button
-              onClick={() => setSection('resetPassword')}
-              className="mt-4 text-indigo-600 hover:text-indigo-800"
-            >
-              Mot de passe oublié?
-            </button>
           </div>
         )}
 
@@ -547,44 +677,7 @@ function App() {
           </div>
         )}
 
-        {section === 'resetPassword' && (
-          <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold mb-6">Réinitialisation du mot de passe</h2>
-            <form onSubmit={handlePasswordReset} className="space-y-4">
-              <div>
-                <label className="block mb-1">Email</label>
-                <input
-                  type="email"
-                  value={resetEmail}
-                  onChange={(e) => setResetEmail(e.target.value)}
-                  required
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-              <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">
-                Réinitialiser le mot de passe
-              </button>
-            </form>
-          </div>
-        )}
-
-        {section === 'forums' && currentUser && (
-          <div className="bg-white p-8 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold mb-6">Forums</h2>
-            {forums.length === 0 ? (
-              <p className="text-gray-600">Aucun forum n'a été créé pour le moment.</p>
-            ) : (
-              <div className="space-y-4">
-                {forums.map(forum => (
-                  <div key={forum.id} className="border p-4 rounded">
-                    <h3 className="text-xl font-semibold">{forum.name}</h3>
-                    <p className="text-gray-600">{forum.description}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+        {section === 'profile' && currentUser && renderUserProfile(currentUser)}
 
         {section === 'admin' && currentUser?.isAdmin && (
           <div className="space-y-6">
@@ -603,6 +696,12 @@ function App() {
                   Gestion des rôles
                 </button>
                 <button
+                  onClick={() => setAdminSection('users')}
+                  className={`px-4 py-2 rounded ${adminSection === 'users' ? 'bg-indigo-600 text-white' : 'hover:bg-gray-100'}`}
+                >
+                  Gestion des utilisateurs
+                </button>
+                <button
                   onClick={() => setAdminSection('forums')}
                   className={`px-4 py-2 rounded ${adminSection === 'forums' ? 'bg-indigo-600 text-white' : 'hover:bg-gray-100'}`}
                 >
@@ -612,6 +711,22 @@ function App() {
             </div>
             
             {renderAdminContent()}
+          </div>
+        )}
+
+        {selectedUser && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                {renderUserProfile(selectedUser)}
+                <button
+                  onClick={() => setSelectedUser(null)}
+                  className="mt-4 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                >
+                  Fermer
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </main>
