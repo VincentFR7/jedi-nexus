@@ -1,29 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Shield, Users } from 'lucide-react';
-
-interface Permission {
-  id: string;
-  name: string;
-  description: string;
-}
-
-interface Role {
-  id: number;
-  name: string;
-  permissions: string[];
-  createdAt: string;
-  createdBy: string;
-}
+import { Mail, Shield, UserPlus, Users, Settings, Trash2 } from 'lucide-react';
 
 interface User {
   id: number;
   username: string;
   email: string;
   rank: number;
-  role?: string;
   isAdmin: boolean;
   createdAt: string;
   messageCount: number;
+  roleId?: number;
 }
 
 interface Forum {
@@ -38,12 +24,26 @@ interface Forum {
   };
 }
 
+interface Permission {
+  id: string;
+  name: string;
+  description: string;
+}
+
+interface Role {
+  id: number;
+  name: string;
+  permissions: string[];
+  createdAt: string;
+}
+
 const DEFAULT_PERMISSIONS: Permission[] = [
   { id: 'create_forum', name: 'Créer des forums', description: 'Permet de créer de nouveaux forums' },
   { id: 'delete_forum', name: 'Supprimer des forums', description: 'Permet de supprimer des forums existants' },
-  { id: 'manage_users', name: 'Gérer les utilisateurs', description: 'Permet de gérer les utilisateurs' },
-  { id: 'moderate', name: 'Modération', description: 'Permet de modérer les messages' },
-  { id: 'manage_roles', name: 'Gérer les rôles', description: 'Permet de créer et modifier les rôles' },
+  { id: 'moderate_posts', name: 'Modérer les messages', description: 'Permet de modérer les messages des utilisateurs' },
+  { id: 'pin_topics', name: 'Épingler des sujets', description: 'Permet d\'épingler des sujets importants' },
+  { id: 'ban_users', name: 'Bannir des utilisateurs', description: 'Permet de bannir des utilisateurs' },
+  { id: 'edit_users', name: 'Éditer les utilisateurs', description: 'Permet de modifier les informations des utilisateurs' },
 ];
 
 function App() {
@@ -53,27 +53,17 @@ function App() {
   const [resetEmail, setResetEmail] = useState('');
   const [forums, setForums] = useState<Forum[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
-  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
-  const [newRoleName, setNewRoleName] = useState('');
-  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
+  const [newRole, setNewRole] = useState({ name: '', permissions: [] as string[] });
 
   useEffect(() => {
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
       setCurrentUser(JSON.parse(storedUser));
     }
-
-    // Initialize admin account with new password
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const adminIndex = users.findIndex((u: User) => u.isAdmin);
-    if (adminIndex !== -1) {
-      users[adminIndex].password = 'adminlbrpus1';
-      localStorage.setItem('users', JSON.stringify(users));
+    const storedRoles = localStorage.getItem('roles');
+    if (storedRoles) {
+      setRoles(JSON.parse(storedRoles));
     }
-
-    // Load roles
-    const storedRoles = JSON.parse(localStorage.getItem('roles') || '[]');
-    setRoles(storedRoles);
   }, []);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -81,6 +71,23 @@ function App() {
     const form = e.currentTarget;
     const username = (form.elements.namedItem('username') as HTMLInputElement).value;
     const password = (form.elements.namedItem('password') as HTMLInputElement).value;
+
+    if (username === 'Admin' && password === 'adminlbrpus1') {
+      const adminUser = {
+        id: 1,
+        username: 'Admin',
+        email: 'admin@example.com',
+        rank: 3,
+        isAdmin: true,
+        createdAt: new Date().toISOString(),
+        messageCount: 0
+      };
+      setCurrentUser(adminUser);
+      localStorage.setItem('currentUser', JSON.stringify(adminUser));
+      setMessage({ text: 'Connexion réussie!', type: 'success' });
+      setSection('home');
+      return;
+    }
 
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     const user = users.find((u: any) => u.username === username && u.password === password);
@@ -134,7 +141,6 @@ function App() {
     const user = users.find((u: any) => u.email === resetEmail);
 
     if (user) {
-      // In a real app, send email with reset link
       setMessage({ text: 'Instructions de réinitialisation envoyées par email', type: 'success' });
     } else {
       setMessage({ text: 'Email non trouvé', type: 'error' });
@@ -147,41 +153,25 @@ function App() {
     setSection('home');
   };
 
-  const handleCreateRole = () => {
-    if (!newRoleName.trim() || selectedPermissions.length === 0) {
+  const handleCreateRole = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!newRole.name || newRole.permissions.length === 0) {
       setMessage({ text: 'Veuillez remplir tous les champs', type: 'error' });
       return;
     }
 
-    const newRole: Role = {
+    const newRoleObj: Role = {
       id: roles.length + 1,
-      name: newRoleName,
-      permissions: selectedPermissions,
-      createdAt: new Date().toISOString(),
-      createdBy: currentUser?.username || 'System'
+      name: newRole.name,
+      permissions: newRole.permissions,
+      createdAt: new Date().toISOString()
     };
 
-    const updatedRoles = [...roles, newRole];
+    const updatedRoles = [...roles, newRoleObj];
     setRoles(updatedRoles);
     localStorage.setItem('roles', JSON.stringify(updatedRoles));
-    
-    setNewRoleName('');
-    setSelectedPermissions([]);
+    setNewRole({ name: '', permissions: [] });
     setMessage({ text: 'Rôle créé avec succès', type: 'success' });
-  };
-
-  const handleUpdateRole = () => {
-    if (!selectedRole) return;
-
-    const updatedRoles = roles.map(role => 
-      role.id === selectedRole.id 
-        ? { ...role, permissions: selectedPermissions }
-        : role
-    );
-
-    setRoles(updatedRoles);
-    localStorage.setItem('roles', JSON.stringify(updatedRoles));
-    setMessage({ text: 'Rôle mis à jour avec succès', type: 'success' });
   };
 
   const handleDeleteRole = (roleId: number) => {
@@ -189,6 +179,15 @@ function App() {
     setRoles(updatedRoles);
     localStorage.setItem('roles', JSON.stringify(updatedRoles));
     setMessage({ text: 'Rôle supprimé avec succès', type: 'success' });
+  };
+
+  const togglePermission = (permissionId: string) => {
+    setNewRole(prev => ({
+      ...prev,
+      permissions: prev.permissions.includes(permissionId)
+        ? prev.permissions.filter(p => p !== permissionId)
+        : [...prev.permissions, permissionId]
+    }));
   };
 
   return (
@@ -201,7 +200,10 @@ function App() {
               <>
                 <button onClick={() => setSection('forums')} className="hover:text-indigo-200">Forums</button>
                 {currentUser.isAdmin && (
-                  <button onClick={() => setSection('admin')} className="hover:text-indigo-200">Admin</button>
+                  <>
+                    <button onClick={() => setSection('admin')} className="hover:text-indigo-200">Admin</button>
+                    <button onClick={() => setSection('roles')} className="hover:text-indigo-200">Gestion des rôles</button>
+                  </>
                 )}
               </>
             )}
@@ -347,147 +349,134 @@ function App() {
           </div>
         )}
 
-        {section === 'admin' && currentUser?.isAdmin && (
-          <div className="space-y-8">
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <h2 className="text-2xl font-bold mb-6">Gestion des forums</h2>
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                const form = e.currentTarget;
-                const name = (form.elements.namedItem('name') as HTMLInputElement).value;
-                const description = (form.elements.namedItem('description') as HTMLInputElement).value;
-                
-                const newForum = {
-                  id: forums.length + 1,
-                  name,
-                  description,
-                  createdBy: currentUser.username,
-                  createdAt: new Date().toISOString(),
-                  permissions: {
-                    read: [1, 2, 3],
-                    write: [2, 3]
-                  }
-                };
-
-                setForums([...forums, newForum]);
-                form.reset();
-              }} className="space-y-4">
+        {section === 'roles' && currentUser?.isAdmin && (
+          <div className="bg-white p-8 rounded-lg shadow-md">
+            <h2 className="text-2xl font-bold mb-6">Gestion des rôles</h2>
+            
+            <div className="mb-8">
+              <h3 className="text-xl font-semibold mb-4">Créer un nouveau rôle</h3>
+              <form onSubmit={handleCreateRole} className="space-y-4">
                 <div>
-                  <label className="block mb-1">Nom du forum</label>
+                  <label className="block mb-1">Nom du rôle</label>
                   <input
                     type="text"
-                    name="name"
-                    required
+                    value={newRole.name}
+                    onChange={(e) => setNewRole(prev => ({ ...prev, name: e.target.value }))}
                     className="w-full p-2 border rounded"
+                    required
                   />
                 </div>
+                
                 <div>
-                  <label className="block mb-1">Description</label>
-                  <textarea
-                    name="description"
-                    required
-                    className="w-full p-2 border rounded"
-                    rows={3}
-                  />
-                </div>
-                <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-                  Créer un forum
-                </button>
-              </form>
-            </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <Shield className="w-6 h-6" />
-                Gestion des rôles
-              </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-xl font-semibold mb-4">Créer un nouveau rôle</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block mb-1">Nom du rôle</label>
-                      <input
-                        type="text"
-                        value={newRoleName}
-                        onChange={(e) => setNewRoleName(e.target.value)}
-                        className="w-full p-2 border rounded"
-                        placeholder="Ex: Modérateur"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block mb-2">Permissions</label>
-                      <div className="space-y-2">
-                        {DEFAULT_PERMISSIONS.map(permission => (
-                          <div key={permission.id} className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              id={`new-${permission.id}`}
-                              checked={selectedPermissions.includes(permission.id)}
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setSelectedPermissions([...selectedPermissions, permission.id]);
-                                } else {
-                                  setSelectedPermissions(selectedPermissions.filter(p => p !== permission.id));
-                                }
-                              }}
-                              className="rounded"
-                            />
-                            <label htmlFor={`new-${permission.id}`} className="flex-1">
-                              <div className="font-medium">{permission.name}</div>
-                              <div className="text-sm text-gray-500">{permission.description}</div>
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <button
-                      onClick={handleCreateRole}
-                      className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-                    >
-                      Créer le rôle
-                    </button>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-xl font-semibold mb-4">Rôles existants</h3>
-                  <div className="space-y-4">
-                    {roles.map(role => (
-                      <div key={role.id} className="border p-4 rounded">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <h4 className="font-medium">{role.name}</h4>
-                            <p className="text-sm text-gray-500">
-                              Créé par {role.createdBy} le {new Date(role.createdAt).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => handleDeleteRole(role.id)}
-                            className="text-red-600 hover:text-red-800"
-                          >
-                            Supprimer
-                          </button>
-                        </div>
-                        <div className="space-y-2">
-                          {role.permissions.map(permId => {
-                            const perm = DEFAULT_PERMISSIONS.find(p => p.id === permId);
-                            return perm ? (
-                              <div key={permId} className="text-sm">
-                                • {perm.name}
-                              </div>
-                            ) : null;
-                          })}
-                        </div>
+                  <label className="block mb-2">Permissions</label>
+                  <div className="space-y-2">
+                    {DEFAULT_PERMISSIONS.map(permission => (
+                      <div key={permission.id} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id={permission.id}
+                          checked={newRole.permissions.includes(permission.id)}
+                          onChange={() => togglePermission(permission.id)}
+                          className="mr-2"
+                        />
+                        <label htmlFor={permission.id} className="flex-1">
+                          <span className="font-medium">{permission.name}</span>
+                          <span className="text-sm text-gray-500 block">{permission.description}</span>
+                        </label>
                       </div>
                     ))}
                   </div>
                 </div>
+                
+                <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                  Créer le rôle
+                </button>
+              </form>
+            </div>
+            
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Rôles existants</h3>
+              <div className="space-y-4">
+                {roles.map(role => (
+                  <div key={role.id} className="border p-4 rounded">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="text-lg font-medium">{role.name}</h4>
+                        <p className="text-sm text-gray-500">Créé le {new Date(role.createdAt).toLocaleDateString()}</p>
+                        <div className="mt-2">
+                          <p className="font-medium mb-1">Permissions :</p>
+                          <ul className="list-disc list-inside text-sm">
+                            {role.permissions.map(permId => (
+                              <li key={permId}>
+                                {DEFAULT_PERMISSIONS.find(p => p.id === permId)?.name}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteRole(role.id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                {roles.length === 0 && (
+                  <p className="text-gray-600">Aucun rôle n'a été créé pour le moment.</p>
+                )}
               </div>
             </div>
+          </div>
+        )}
+
+        {section === 'admin' && currentUser?.isAdmin && (
+          <div className="bg-white p-8 rounded-lg shadow-md">
+            <h2 className="text-2xl font-bold mb-6">Administration</h2>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const form = e.currentTarget;
+              const name = (form.elements.namedItem('name') as HTMLInputElement).value;
+              const description = (form.elements.namedItem('description') as HTMLInputElement).value;
+              
+              const newForum = {
+                id: forums.length + 1,
+                name,
+                description,
+                createdBy: currentUser.username,
+                createdAt: new Date().toISOString(),
+                permissions: {
+                  read: [1, 2, 3],
+                  write: [2, 3]
+                }
+              };
+
+              setForums([...forums, newForum]);
+              form.reset();
+            }} className="space-y-4">
+              <div>
+                <label className="block mb-1">Nom du forum</label>
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block mb-1">Description</label>
+                <textarea
+                  name="description"
+                  required
+                  className="w-full p-2 border rounded"
+                  rows={3}
+                />
+              </div>
+              <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                Créer un forum
+              </button>
+            </form>
           </div>
         )}
       </main>
