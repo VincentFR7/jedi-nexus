@@ -11,6 +11,7 @@ export default defineConfig({
       'Content-Type': 'application/javascript',
     },
   },
+  base: './',
   build: {
     modulePreload: true,
     target: 'esnext',
