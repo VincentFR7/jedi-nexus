@@ -6,14 +6,21 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
-  server: {
-    headers: {
-      'Content-Type': 'application/javascript',
-    },
-  },
-  base: './',
+  base: '/',
   build: {
     modulePreload: true,
     target: 'esnext',
+    outDir: 'dist',
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
+  },
+  server: {
+    port: 5173,
+    strictPort: true,
+    host: true,
   },
 });
